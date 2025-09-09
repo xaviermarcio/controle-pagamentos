@@ -58,3 +58,4 @@ node_modules/
 # Arquivos sensíveis
 # ======================
 public/js/config.js   # 🔒 NÃO VERSIONAR - contém credenciais reais
+public/teste.html
