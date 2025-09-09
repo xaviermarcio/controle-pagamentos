@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard • Controle de Pagamentos</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#2563eb',
+              dark: '#1d4ed8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+
+<body class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900 transition-colors">
+
+
+  <!-- Navbar -->
+  <nav class="w-full bg-white dark:bg-gray-800 shadow px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold">
+      <i class="bi bi-graph-up"></i> Dashboard
+    </div>
+    <div class="flex items-center gap-4">
+      <!-- Switch Tema -->
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="themeSwitch" class="sr-only peer">
+        <div class="w-11 h-6 bg-gray-300 rounded-full peer dark:bg-gray-700 
+                    peer-checked:bg-primary transition"></div>
+        <div class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full transition 
+                    peer-checked:translate-x-full"></div>
+        <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">Tema escuro</span>
+      </label>
+
+      <!-- Email do usuário -->
+      <span id="userEmail" class="hidden sm:inline text-sm font-semibold text-gray-700 dark:text-gray-200"></span>
+
+      <!-- Botão Sair -->
+      <button id="logoutBtn"
+        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white 
+               font-semibold py-2 px-4 rounded-lg transition">
+        <i class="bi bi-box-arrow-right"></i> Sair
+      </button>
+    </div>
+  </nav>
+
+  <!-- Conteúdo -->
+  <main class="flex-1 container mx-auto p-4">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6">
+      <div>
+        <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Resumo de Pagamentos</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Visão geral das parcelas pagas e pendentes.</p>
+      </div>
+      <a href="parcelas.html"
+        class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white 
+               font-semibold py-2 px-4 rounded-lg transition">
+        <i class="bi bi-cash-coin"></i> Pagar Parcelas
+      </a>
+    </header>
+
+    <!-- Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Pagas</p>
+        <p id="statPagasDash" class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Pendentes</p>
+        <p id="statPendentesDash" class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Total Pago</p>
+        <p id="statTotalPagoDash" class="text-2xl font-semibold text-gray-900 dark:text-white">R$ 0,00</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">A Dever</p>
+        <p id="statTotalDevidoDash" class="text-2xl font-semibold text-gray-900 dark:text-white">R$ 0,00</p>
+      </div>
+    </div>
+
+    <!-- Progresso -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mt-6">
+      <div class="flex justify-between mb-2">
+        <span class="font-semibold text-gray-800 dark:text-white">Evolução do Pagamento</span>
+        <span id="progressLabelDash" class="text-sm text-gray-500 dark:text-gray-400">0% (0/0)</span>
+      </div>
+      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+        <div id="progressBarDash" class="bg-primary h-3 rounded-full transition-all" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Gráfico -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mt-6">
+      <canvas id="chartStatus" class="w-full h-80"></canvas>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t bg-white dark:bg-gray-800 mt-6">
+    <div class="container mx-auto py-4 flex flex-col md:flex-row justify-between items-center gap-3 text-gray-600 dark:text-gray-400 text-sm">
+      <div class="flex items-center gap-2">
+        <i class="bi bi-cash-coin"></i>
+        <span class="font-semibold">Pagamentos</span>
+        <span>•</span>
+        <span>controle de parcelas</span>
+      </div>
+      <nav class="flex gap-4">
+        <a href="parcelas.html" class="hover:underline">Parcelas</a>
+        <a href="dashboard.html" class="hover:underline">Dashboard</a>
+        <a href="contato.html" class="hover:underline">Contato</a>
+      </nav>
+    </div>
+    <div class="text-center text-xs text-gray-500 dark:text-gray-400 pb-3">
+      © <span id="year"></span> Controle de Pagamentos - Michele Moreira
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <script type="module" src="./js/auth-guard.js"></script>
+  <script type="module" src="./js/dashboard.js"></script>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+
+  <!-- Script Tema -->
+  <script>
+    const themeSwitch = document.getElementById("themeSwitch");
+    const root = document.documentElement;
+    if (localStorage.getItem("theme") === "dark") {
+      root.classList.add("dark");
+      themeSwitch.checked = true;
+    }
+    themeSwitch.addEventListener("change", () => {
+      if (themeSwitch.checked) {
+        root.classList.add("dark");
+        localStorage.setItem("theme","dark");
+      } else {
+        root.classList.remove("dark");
+        localStorage.setItem("theme","light");
+      }
+    });
+  </script>
+
+  <!-- Script Auth para exibir email -->
+  <script type="module">
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    const auth = getAuth();
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById("userEmail").textContent = user.email;
+      }
+    });
+  </script>
+
+  <!-- Service Worker -->
+    <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(() => console.log("Service Worker registrado"))
+        .catch(err => console.error("Erro no Service Worker:", err));
+    }
+    </script>
+
+<div id="welcomeOverlay" 
+     class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center 
+            z-[9999] opacity-0 transition-opacity duration-700">
+  <div id="welcomeMessage"
+       class="bg-green-600 text-white font-semibold py-4 px-8 rounded-xl shadow-2xl text-lg 
+              transform scale-95 transition-transform duration-700">
+    👋 Bem-vindo ao Sistema de Pagamentos!
+  </div>
+</div>
+
+
+
+</body>
+</html>

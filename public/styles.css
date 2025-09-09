@@ -1,0 +1,246 @@
+
+/* =====================
+   Paleta Global (Viva • Premium)
+   Aplica em todo o projeto (Bootstrap + Charts)
+   ===================== */
+:root{
+  /* cores principais */
+  --cor-pago: #16A34A;               /* verde */
+  --cor-pago-suave: #DCFCE7;
+  --cor-pendente: #F59E0B;           /* amarelo */
+  --cor-pendente-suave: #FEF3C7;
+
+  /* gradientes para gráficos */
+  --cor-pago-grad-start: #22C55E;
+  --cor-pago-grad-end:   #15803D;
+  --cor-pendente-grad-start: #FBBF24;
+  --cor-pendente-grad-end:   #B45309;
+
+  /* tokens gráficos */
+  --chart-text: var(--bs-body-color);
+  --chart-grid: rgba(0,0,0,.08);
+  --chart-pill-bg: rgba(0,0,0,.05);
+
+  /* mapeia para Bootstrap */
+  --bs-success: var(--cor-pago);
+  --bs-success-rgb: 22,163,74;
+  --bs-warning: var(--cor-pendente);
+  --bs-warning-rgb: 245,158,11;
+}
+
+[data-bs-theme="dark"]{
+  --chart-grid: rgba(255,255,255,.12);
+  --chart-pill-bg: rgba(255,255,255,.12);
+}
+
+/* Polimento visual global */
+.card{ border-radius:1rem; }
+.btn, .badge{ border-radius:.6rem; }
+
+/* Switch mais consistente com a paleta */
+.form-check-input:checked{
+  background-color: var(--bs-success);
+  border-color: var(--bs-success);
+}
+
+/* Efeitos de hover/active sutis */
+.btn-success:hover{ box-shadow:0 6px 16px rgba(var(--bs-success-rgb), .25); }
+.btn-warning:hover{ box-shadow:0 6px 16px rgba(var(--bs-warning-rgb), .25); }
+.btn-outline-danger:hover{ box-shadow:0 6px 16px rgba(220,53,69,.25); }
+
+/* Pílula para datalabels (se aplicada via plugin) */
+.chart-pill{
+  background: var(--chart-pill-bg);
+  color: var(--chart-text);
+  padding:.25rem .5rem;
+  border-radius:.5rem;
+}
+
+
+
+/* =====================
+   Paleta Global (Viva)
+   - Pagas = Verde
+   - Pendentes = Amarelo
+   - Aplica no Bootstrap (success/warning) e nos gráficos
+   ===================== */
+:root{
+  /* Cores principais (hex) */
+  --cor-pago: #16A34A;              /* verde 600 */
+  --cor-pago-suave: #DCFCE7;
+  --cor-pendente: #F59E0B;          /* amber 500 */
+  --cor-pendente-suave: #FEF3C7;
+
+  /* Tokens para gráficos e detalhes */
+  --chart-text: var(--bs-body-color);
+  --chart-grid: rgba(0,0,0,.08);
+  --chart-pill-bg: rgba(0,0,0,.05);
+
+  /* Mapeamento Bootstrap */
+  --bs-success: var(--cor-pago);
+  --bs-success-rgb: 22, 163, 74;    /* rgb de #16A34A */
+  --bs-warning: var(--cor-pendente);
+  --bs-warning-rgb: 245, 158, 11;   /* rgb de #F59E0B */
+}
+
+[data-bs-theme="dark"]{
+  /* Ajustes de contraste para o tema escuro */
+  --chart-grid: rgba(255,255,255,.12);
+  --chart-pill-bg: rgba(255,255,255,.12);
+}
+
+/* ---- Toques visuais globais (opcional, finos) ---- */
+.card{
+  border-radius: 1rem;
+}
+.btn{
+  border-radius: .6rem;
+}
+.badge{
+  border-radius: .6rem;
+}
+.form-check-input:checked{
+  /* melhora contraste do switch no tema atual */
+  background-color: var(--bs-success);
+  border-color: var(--bs-success);
+}
+
+/* Pílulas de valor nos datalabels (quando o Chart aplica background) */
+.chart-pill{
+  background: var(--chart-pill-bg);
+  color: var(--chart-text);
+  padding: .25rem .5rem;
+  border-radius: .5rem;
+}
+
+
+/* ------ Base ------ */
+:root {
+  --brand: #0d6efd;
+}
+
+.brand-logo {
+  width: 56px; height: 56px;
+  background: rgba(13, 110, 253, .1);
+}
+
+.auth-card .card-footer { font-size: .85rem; }
+
+.loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(2px);
+}
+
+.stat-card i { opacity: .35; }
+
+/* Dark mode tweaks */
+@media (prefers-color-scheme: dark) {
+  .brand-logo { background: rgba(13, 110, 253, .2); }
+}
+
+/* Focus ring helper */
+.ring { box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .35) !important; }
+
+/* Manual dark theme surface tweak */
+:root[data-bs-theme="dark"] .bg-body { background-color: #0b0d10 !important; }
+
+/* anel de foco no grupo inteiro */
+.input-eye { border: 1px solid var(--bs-border-color); }
+.input-eye:focus-within {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb), .25);
+}
+
+/* remove focos individuais que “quebram” a borda */
+.input-eye .form-control:focus,
+.input-eye .btn:focus {
+  box-shadow: none;
+  outline: 0;
+}
+
+/* Professional loading overlay */
+.loading { 
+  position: fixed; inset: 0; 
+  display: flex; align-items: center; justify-content: center; 
+  background: rgba(0,0,0,.35); backdrop-filter: blur(3px);
+  z-index: 2000;
+}
+.loading-modal { 
+  width: min(480px, 92vw); 
+  background: var(--bs-body-bg); 
+  border-color: var(--bs-border-color) !important;
+  padding: 20px;
+}
+:root[data-bs-theme="dark"] .loading { background: rgba(0,0,0,.55); }
+
+.loading .spinner-border{ width:2.5rem;height:2.5rem;border-width:.3rem; }
+#loadingProgress{ border-radius:999px; }
+
+
+/* Toolbar de parcelas – refinamentos leves */
+.page-header .input-group-text { background: var(--bs-body-bg); border-color: var(--bs-border-color); }
+.page-header .form-control, .page-header .form-select { border-color: var(--bs-border-color); }
+
+/* Controles um pouco menores no mobile */
+@media (max-width: 576px) {
+  .page-header .btn,
+  .page-header .form-control,
+  .page-header .form-select,
+  .page-header .input-group-text {
+    padding: .4rem .6rem;
+    font-size: .9rem;
+  }
+}
+
+/* Footer */
+.app-footer { background: var(--bs-body-bg); }
+.app-footer .link-footer {
+  color: var(--bs-secondary-color);
+  text-decoration: none;
+  transition: color .15s ease, text-decoration-color .15s ease;
+}
+.app-footer .link-footer:hover,
+.app-footer .link-footer:focus {
+  color: var(--bs-body-color);
+  text-decoration: underline;
+  text-decoration-color: var(--bs-body-color);
+}
+
+/* Footer centralizado no mobile */
+@media (max-width: 576px) {
+  .app-footer { text-align: center; }
+  .app-footer .d-flex.flex-column { 
+    align-items: center !important;   /* top e bottom viram colunas centralizadas */
+  }
+  .app-footer nav { 
+    justify-content: center;          /* centraliza os links */
+  }
+  .app-footer .me-md-auto { 
+    margin-right: 0 !important;       /* garante que a marca não “puxe” pro lado */
+  }
+}
+
+
+@media (max-width: 576px) {
+  .app-footer nav {
+    display: flex !important;
+    justify-content: center;
+    gap: .75rem 1.25rem;
+    flex-wrap: wrap;
+  }
+  .app-footer .link-footer {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .95rem;
+    text-decoration: none;
+  }
+}
+
+/* Oculta links do footer na index */
+.page-index .app-footer .footer-links { display: none !important; }

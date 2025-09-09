@@ -1,0 +1,23 @@
+# Dependências
+node_modules/
+venv/
+
+# Builds e cache
+dist/
+build/
+.cache/
+
+# Configurações sensíveis
+config.js
+.env
+*.env
+
+# Sistema e IDE
+.vscode/
+.idea/
+*.log
+*.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.tmp

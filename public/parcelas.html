@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parcelas • Controle de Pagamentos</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#2563eb', dark: '#1d4ed8' }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 transition-colors">
+
+  <!-- Navbar -->
+  <nav class="w-full bg-white dark:bg-gray-800 shadow px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold">
+      <i class="bi bi-cash-coin"></i> Pagamentos
+    </div>
+    <div class="flex items-center gap-4">
+      <!-- Switch Tema -->
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="themeSwitch" class="sr-only peer">
+        <div class="w-11 h-6 bg-gray-300 rounded-full peer dark:bg-gray-700 
+                    peer-checked:bg-primary transition"></div>
+        <div class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full transition 
+                    peer-checked:translate-x-full"></div>
+        <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">Tema escuro</span>
+      </label>
+       <!-- Email do usuário -->
+      <span id="userEmail" class="hidden sm:inline text-sm font-semibold text-gray-700 dark:text-gray-200"></span>
+      
+      <button id="logoutBtn"
+        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+        <i class="bi bi-box-arrow-right"></i> Sair
+      </button>
+    </div>
+  </nav>
+
+  <!-- Conteúdo -->
+  <main class="container mx-auto p-4 flex-1">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6">
+      <div>
+        <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Controle de Parcelas</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Total de 57 parcelas de <span id="valorParcelaHeader"></span> cada.
+        </p>
+      </div>
+      <a href="dashboard.html"
+        class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-lg transition">
+        <i class="bi bi-graph-up"></i> Dashboard
+      </a>
+    </header>
+
+    <!-- Busca/Filtro -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+      <div class="flex items-center gap-2 col-span-2">
+        <div class="flex w-full rounded-lg shadow-sm">
+          <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 text-gray-500">
+            <i class="bi bi-search"></i>
+          </span>
+          <input id="searchInput" type="text" inputmode="numeric"
+            class="flex-1 rounded-r-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:ring-2 focus:ring-primary"
+            placeholder="Buscar por número (ex.: 12)">
+        </div>
+        <button id="clearSearch"
+          class="hidden md:inline px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <div class="flex gap-2">
+        <select id="filterSelect"
+          class="flex-1 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2">
+          <option value="todas">Todas</option>
+          <option value="pendentes">Pendentes</option>
+          <option value="pagas">Pagas</option>
+        </select>
+        <button id="exportCsvBtn"
+          class="px-4 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white transition">
+          <i class="bi bi-filetype-csv"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Summary Cards -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="summaryRow">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Pagas</p>
+        <p id="statPagas" class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Pendentes</p>
+        <p id="statPendentes" class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Total Pago</p>
+        <p id="statTotalPago" class="text-2xl font-semibold text-gray-900 dark:text-white">R$ 0,00</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Total Devido</p>
+        <p id="statTotalDevido" class="text-2xl font-semibold text-gray-900 dark:text-white">R$ 0,00</p>
+      </div>
+    </section>
+
+    <!-- Lista -->
+    <section id="parcelas" class="flex flex-col gap-3"></section>
+
+    <!-- Paginação -->
+    <nav class="mt-6">
+      <ul id="pagination" class="flex justify-center gap-2"></ul>
+    </nav>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-4 right-4 hidden z-50 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg"></div>
+
+  <!-- Loading -->
+  <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="flex items-center gap-2 text-white">
+      <div class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+      Carregando...
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="confirmPagarModal"
+       class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-md p-6">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Confirmar Pagamento</h2>
+      <p id="confirmPagarText" class="text-gray-700 dark:text-gray-300 mb-6"></p>
+      <div class="flex justify-end gap-3">
+        <button id="confirmPagarCancel"
+                class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600">
+          Cancelar
+        </button>
+        <button id="confirmPagarOk"
+                class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t bg-white dark:bg-gray-800 mt-6">
+    <div class="container mx-auto py-4 flex flex-col md:flex-row justify-between items-center gap-3 text-gray-600 dark:text-gray-400 text-sm">
+      <div class="flex items-center gap-2">
+        <i class="bi bi-cash-coin"></i>
+        <span class="font-semibold">Pagamentos</span>
+        <span>•</span>
+        <span>controle de parcelas</span>
+      </div>
+      <nav class="flex gap-4">
+        <a href="parcelas.html" class="hover:underline">Parcelas</a>
+        <a href="dashboard.html" class="hover:underline">Dashboard</a>
+        <a href="contato.html" class="hover:underline">Contato</a>
+      </nav>
+    </div>
+    <div class="text-center text-xs text-gray-500 dark:text-gray-400 pb-3">
+      © <span id="year"></span> Controle de Pagamentos - Michele Moreira
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const themeSwitch = document.getElementById("themeSwitch");
+    const root = document.documentElement;
+    const saved = localStorage.getItem("theme") || (matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
+    root.classList.toggle("dark", saved === "dark");
+    if (themeSwitch) themeSwitch.checked = saved === "dark";
+    themeSwitch?.addEventListener("change", () => {
+      const t = themeSwitch.checked ? "dark":"light";
+      root.classList.toggle("dark", t === "dark");
+      localStorage.setItem("theme", t);
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+   <!-- Auth Guard -->
+<script type="module" src="./js/auth-guard.js"></script>
+
+<!-- Script Auth para exibir email -->
+<script type="module">
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  const auth = getAuth();
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      document.getElementById("userEmail").textContent = user.email;
+    }
+  });
+</script>
+
+<!-- Parcelas JS -->
+<script type="module" src="./js/parcelas.js"></script>
+
+
+<!-- Service Worker -->
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js")
+      .then(() => console.log("Service Worker registrado"))
+      .catch(err => console.error("Erro no Service Worker:", err));
+  }
+</script>
+</body>
+</html>

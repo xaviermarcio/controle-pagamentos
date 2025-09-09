@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login • Controle de Pagamentos</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#2563eb', // Azul Premium
+              dark: '#1d4ed8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body class="h-full flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors">
+
+  <!-- Navbar -->
+  <nav class="w-full max-w-md flex justify-between items-center mb-6 px-4">
+    <span class="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-200">
+      <i class="bi bi-person-lock text-lg"></i> Login
+    </span>
+    <!-- Switch Tema -->
+    <label class="relative inline-flex items-center cursor-pointer">
+      <input type="checkbox" id="themeSwitch" class="sr-only peer">
+      <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-gray-700
+                  peer-checked:bg-primary peer transition"></div>
+      <div class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full transition
+                  peer-checked:translate-x-full"></div>
+      <span class="ml-3 text-sm text-gray-600 dark:text-gray-300">Tema escuro</span>
+    </label>
+  </nav>
+
+  <!-- Card -->
+  <div class="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 transition-colors">
+    <!-- Ícone -->
+    <div class="flex justify-center mb-6">
+      <div class="w-14 h-14 flex items-center justify-center rounded-full bg-primary text-white">
+        <i class="bi bi-shield-lock text-2xl"></i>
+      </div>
+    </div>
+
+    <!-- Título -->
+    <h1 class="text-2xl font-bold text-center text-gray-800 dark:text-white">Acessar painel</h1>
+    <p class="text-center text-gray-500 dark:text-gray-400 text-sm mb-6">Use seu e-mail e senha cadastrados</p>
+
+    <!-- Formulário -->
+    <form id="login-form" class="space-y-5">
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">E-mail</label>
+        <input id="email" type="email" placeholder="seu@email.com"
+          class="mt-1 w-full rounded-lg 
+                 border border-gray-400 dark:border-gray-600 
+                 bg-gray-50 dark:bg-gray-700 
+                 text-gray-900 dark:text-white
+                 placeholder-gray-400 dark:placeholder-gray-500
+                 focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-50 
+                 p-3 transition">
+      </div>
+
+      <!-- Senha -->
+      <div>
+        <label for="senha" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Senha</label>
+        <input id="senha" type="password" placeholder="••••••••"
+          class="mt-1 w-full rounded-lg 
+                 border border-gray-400 dark:border-gray-600 
+                 bg-gray-50 dark:bg-gray-700 
+                 text-gray-900 dark:text-white
+                 placeholder-gray-400 dark:placeholder-gray-500
+                 focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-50 
+                 p-3 transition">
+      </div>
+
+      <!-- Botão login normal -->
+      <div>
+        <button type="submit"
+                class="w-full flex justify-center items-center bg-primary hover:bg-primary-dark text-white 
+                       font-semibold py-3 px-4 rounded-lg transition">
+          Entrar
+        </button>
+      </div>
+
+      <!-- Botão Google -->
+      <div>
+        <button type="button" id="google-login"
+                class="w-full flex justify-center items-center border border-gray-300 bg-white hover:bg-gray-50 
+                       text-gray-700 font-medium py-3 px-4 rounded-lg transition">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+               alt="Google" class="w-5 h-5 mr-2">
+          Entrar com Google
+        </button>
+      </div>
+
+      <!-- Mensagem geral -->
+      <div id="error-alert" class="hidden text-sm text-red-600 dark:text-red-400 text-center font-medium"></div>
+
+      <!-- Links -->
+      <div class="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
+        <a href="register.html" class="text-primary hover:underline">Criar conta</a>
+        <span class="mx-2">•</span>
+        <a href="reset.html" class="hover:underline">Esqueci minha senha</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Overlay de Loading -->
+  <!-- Overlay de Loading -->
+<div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50">
+  <!-- Spinner -->
+  <div class="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+  <!-- Texto -->
+  <p class="mt-4 text-white font-semibold text-lg">Entrando...</p>
+</div>
+
+
+  <!-- Script Tema -->
+  <script>
+    const themeSwitch = document.getElementById("themeSwitch");
+    const root = document.documentElement;
+
+    if (localStorage.getItem("theme") === "dark") {
+      root.classList.add("dark");
+      themeSwitch.checked = true;
+    }
+
+    themeSwitch.addEventListener("change", () => {
+      if (themeSwitch.checked) {
+        root.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        root.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
+    });
+  </script>
+
+  <!-- Firebase + Login -->
+  <script type="module" src="./js/login.js"></script>
+
+  <!-- Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(() => console.log("Service Worker registrado"))
+        .catch(err => console.error("Erro no Service Worker:", err));
+    }
+  </script>
+</body>
+</html>
