@@ -15,7 +15,7 @@
 ---
 
 ## 📖 História do Projeto  
-Este sistema nasceu de uma **necessidade real**: minha esposa adquiriu um lote parcelado em **57 parcelas de R$ 2.000,00**.  
+Este sistema nasceu de uma **necessidade real**: um amigo adquiriu um lote parcelado em **57 parcelas de R$ 2.000,00**.  
 A ideia inicial era controlar os pagamentos em uma planilha de Excel, mas percebi que poderia criar uma solução muito mais eficiente, segura e moderna.  
 
 Assim surgiu este projeto: um **sistema completo de controle de parcelas**, com:  
