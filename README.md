@@ -142,5 +142,5 @@ Fluxo geral:
 
 1. **Clonar o repositório**  
    ```bash
-   git clone https://github.com/seuusuario/controle-parcelas.git
+   git clone https://github.com/xaviermarcio/controle-pagamentos.git
    cd controle-parcelas
